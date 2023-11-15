@@ -3,6 +3,7 @@ import torch
 from data.base_dataset import BaseDataset
 from util.util import is_mesh_file, pad
 from models.layers.mesh import Mesh
+import numpy as np
 
 class ClassificationData(BaseDataset):
 
