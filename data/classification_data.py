@@ -37,7 +37,7 @@ class ClassificationData(BaseDataset):
 
         centroids_array = np.array([np.array(centroid) for centroid in centroids], dtype=object)
         centroids_padded = pad(centroids_array, self.opt.ninput_edges)
-        meta['edge_centroids'] = centroids_padded
+        meta['edge_features'] = centroids_padded
 
         # get edge features
         # edge_features = mesh.extract_features()
