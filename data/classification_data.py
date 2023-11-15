@@ -47,7 +47,7 @@ class ClassificationData(BaseDataset):
         
         # edge_features = mesh.extract_features()
         # edge_features = pad(edge_features, self.opt.ninput_edges)
-        meta['edge_centroids'] = (centroids_tensor - self.mean) / self.std
+        meta['edge_features'] = (centroids_tensor - self.mean) / self.std
         return meta
 
     def __len__(self):

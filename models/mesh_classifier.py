@@ -43,7 +43,7 @@ class ClassifierModel:
             self.load_network(opt.which_epoch)
 
     def set_input(self, data):
-        input_centroid_features = torch.from_numpy(data['edge_centroids']).float()
+        input_centroid_features = torch.from_numpy(data['edge_features']).float()
         labels = torch.from_numpy(data['label']).long()
         # set inputs
         self.edge_features = input_centroid_features.to(self.device).requires_grad_(self.is_train)
