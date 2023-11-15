@@ -308,18 +308,27 @@ def set_edge_lengths(mesh, edge_points=None):
 
 
 def extract_features(mesh):
-    features = []
-    edge_points = get_edge_points(mesh)
-    set_edge_lengths(mesh, edge_points)
+    # features = []
+    # edge_points = get_edge_points(mesh)
+    # set_edge_lengths(mesh, edge_points)
+    centroids = []
     with np.errstate(divide='raise'):
         try:
-            for extractor in [dihedral_angle, symmetric_opposite_angles, symmetric_ratios]:
-                feature = extractor(mesh, edge_points)
-                features.append(feature)
-            return np.concatenate(features, axis=0)
+            for edge in mesh.edges:
+                v1, v2 = edge.vertices  # Assuming edge has a list of its vertices
+                centroid = (v1.coords + v2.coords) / 2  # Assuming vertices have coords attribute
+                centroids.append(centroid)
+            # for extractor in [dihedral_angle, symmetric_opposite_angles, symmetric_ratios]:
+            #     feature = extractor(mesh, edge_points)
+            #     features.append(feature)
+            return np.concatenate(centroids, axis=0)
+            # return np.array(centroids)
         except Exception as e:
             print(e)
             raise ValueError(mesh.filename, 'bad features')
+
+    
+    return np.array(centroids)
 
 
 def dihedral_angle(mesh, edge_points):
