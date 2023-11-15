@@ -26,10 +26,20 @@ class ClassificationData(BaseDataset):
         label = self.paths[index][1]
         mesh = Mesh(file=path, opt=self.opt, hold_history=False, export_folder=self.opt.export_folder)
         meta = {'mesh': mesh, 'label': label}
+
+        #calculate centroid coordinates for each edge
+        centroids = []
+        for edge in mesh.edges:
+            v1, v2 = mesh.vs[edge[0]], mesh.vs[edge[1]]
+            centroid = [(v1[i] + v2[i]) / 2 for i in range(3)]  # Assuming 3D coordinates
+            centroids.append(centroid)
+        centroids = pad(centroids, self.opt.ninput_edges)
+        meta['edge_centroids'] = centroids
+
         # get edge features
-        edge_features = mesh.extract_features()
-        edge_features = pad(edge_features, self.opt.ninput_edges)
-        meta['edge_features'] = (edge_features - self.mean) / self.std
+        # edge_features = mesh.extract_features()
+        # edge_features = pad(edge_features, self.opt.ninput_edges)
+        # meta['edge_features'] = (edge_features - self.mean) / self.std
         return meta
 
     def __len__(self):
