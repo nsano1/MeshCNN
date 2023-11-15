@@ -3,7 +3,6 @@ import torch
 from data.base_dataset import BaseDataset
 from util.util import is_mesh_file, pad
 from models.layers.mesh import Mesh
-import numpy as np
 
 class ClassificationData(BaseDataset):
 
@@ -27,22 +26,28 @@ class ClassificationData(BaseDataset):
         label = self.paths[index][1]
         mesh = Mesh(file=path, opt=self.opt, hold_history=False, export_folder=self.opt.export_folder)
         meta = {'mesh': mesh, 'label': label}
+        # get edge features
 
-        #calculate centroid coordinates for each edge
         centroids = []
         for edge in mesh.edges:
             v1, v2 = mesh.vs[edge[0]], mesh.vs[edge[1]]
             centroid = [(v1[i] + v2[i]) / 2 for i in range(3)]  # Assuming 3D coordinates
             centroids.append(centroid)
 
-        centroids_array = np.array([np.array(centroid) for centroid in centroids], dtype=object)
-        centroids_padded = pad(centroids_array, self.opt.ninput_edges)
-        meta['edge_features'] = centroids_padded
+        # Convert list of centroids to a PyTorch tensor
+        centroids_tensor = torch.tensor(centroids, dtype=torch.float32)
 
-        # get edge features
+        # Pad the tensor to match the expected shape
+        centroids_tensor = pad(centroids_tensor, self.opt.ninput_edges)
+
+        # Normalize if necessary (use the same mean and std as for original features)
+        centroids_tensor = (centroids_tensor - self.mean) / self.std
+
+
+        
         # edge_features = mesh.extract_features()
         # edge_features = pad(edge_features, self.opt.ninput_edges)
-        # meta['edge_features'] = (edge_features - self.mean) / self.std
+        meta['edge_centroids'] = (centroids_tensor - self.mean) / self.std
         return meta
 
     def __len__(self):
