@@ -31,20 +31,12 @@ class ClassificationData(BaseDataset):
         centroids = []
         for edge in mesh.edges:
             v1, v2 = mesh.vs[edge[0]], mesh.vs[edge[1]]
-            centroid = [(v1[i] + v2[i]) / 2 for i in range(3)]  # Assuming 3D coordinates
+            centroid = [(v1[i] + v2[i]) / 2 for i in range(3)]
             centroids.append(centroid)
-
-        # Convert list of centroids to a PyTorch tensor
         centroids_tensor = torch.tensor(centroids, dtype=torch.float32)
-
-        # Pad the tensor to match the expected shape
         centroids_tensor = pad(centroids_tensor, self.opt.ninput_edges)
-
-        # Normalize if necessary (use the same mean and std as for original features)
         centroids_tensor = (centroids_tensor - self.mean) / self.std
 
-
-        
         # edge_features = mesh.extract_features()
         # edge_features = pad(edge_features, self.opt.ninput_edges)
         meta['edge_features'] = (centroids_tensor - self.mean) / self.std
