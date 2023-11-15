@@ -33,8 +33,10 @@ class ClassificationData(BaseDataset):
             v1, v2 = mesh.vs[edge[0]], mesh.vs[edge[1]]
             centroid = [(v1[i] + v2[i]) / 2 for i in range(3)]  # Assuming 3D coordinates
             centroids.append(centroid)
-        centroids = pad(centroids, self.opt.ninput_edges)
-        meta['edge_centroids'] = centroids
+
+        centroids_array = np.array([np.array(centroid) for centroid in centroids], dtype=object)
+        centroids_padded = pad(centroids_array, self.opt.ninput_edges)
+        meta['edge_centroids'] = centroids_padded
 
         # get edge features
         # edge_features = mesh.extract_features()
