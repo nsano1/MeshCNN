@@ -20,7 +20,7 @@ class Mesh:
             self.init_history()
         self.export()
 
-    def s(self):
+    def extract_features(self):
         return self.features
 
     def merge_vertices(self, edge_id):
