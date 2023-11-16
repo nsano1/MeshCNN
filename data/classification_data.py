@@ -27,7 +27,16 @@ class ClassificationData(BaseDataset):
         mesh = Mesh(file=path, opt=self.opt, hold_history=False, export_folder=self.opt.export_folder)
         meta = {'mesh': mesh, 'label': label}
         # get edge features
+        edge_features = mesh.extract_features()
+        edge_features = pad(edge_features, self.opt.ninput_edges)
+        meta['edge_features'] = (edge_features - self.mean) / self.std
 
+        '''
+        path = self.paths[index][0]
+        label = self.paths[index][1]
+        mesh = Mesh(file=path, opt=self.opt, hold_history=False, export_folder=self.opt.export_folder)
+        meta = {'mesh': mesh, 'label': label}
+        
         centroids = []
         for edge in mesh.edges:
             v1, v2 = mesh.vs[edge[0]], mesh.vs[edge[1]]
@@ -36,10 +45,8 @@ class ClassificationData(BaseDataset):
         centroids_tensor = torch.tensor(centroids, dtype=torch.float32)
         centroids_tensor = pad(centroids_tensor, self.opt.ninput_edges)
         centroids_tensor = (centroids_tensor - self.mean) / self.std
-
-        # edge_features = mesh.extract_features()
-        # edge_features = pad(edge_features, self.opt.ninput_edges)
         meta['edge_features'] = (centroids_tensor - self.mean) / self.std
+        '''
         return meta
 
     def __len__(self):
