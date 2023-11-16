@@ -36,7 +36,7 @@ class MeshPool(nn.Module):
             for mesh_index in range(len(meshes)):
                 pool_threads[mesh_index].join()
         out_features = torch.cat(self.__updated_fe).view(len(meshes), -1, self.__out_target)
-        return out_features
+        return fe #instead of out_features, just return fe
 
     def __pool_main(self, mesh_index):
         mesh = self.__meshes[mesh_index]
