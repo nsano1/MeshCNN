@@ -149,7 +149,7 @@ class MeshConvNet(nn.Module):
             x = F.relu(getattr(self, 'norm{}'.format(i))(x))
             #x = getattr(self, 'pool{}'.format(i))(x, mesh)
 
-        x = self.gp(x)
+        #x = self.gp(x)
         x = x.view(-1, self.k[-1])
 
         x = F.relu(self.fc1(x))
