@@ -138,7 +138,7 @@ class MeshConvNet(nn.Module):
             setattr(self, 'pool{}'.format(i), MeshPool(self.res[i + 1])) #
             
         self.gp = torch.nn.AvgPool1d(self.res[-1]) #
-        self.gp = torch.nn.MaxPool1d(self.res[-1])
+        # self.gp = torch.nn.MaxPool1d(self.res[-1])
         self.fc1 = nn.Linear(self.k[-1], fc_n)
         self.fc2 = nn.Linear(fc_n, nclasses)
 
