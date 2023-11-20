@@ -313,13 +313,27 @@ def extract_features(mesh):
     set_edge_lengths(mesh, edge_points)
     with np.errstate(divide='raise'):
         try:
-            for extractor in [dihedral_angle, symmetric_opposite_angles, symmetric_ratios]:
+            #for extractor in [dihedral_angle, symmetric_opposite_angles, symmetric_ratios]:
+            for extractor in [calculate_centroids]:
                 feature = extractor(mesh, edge_points)
                 features.append(feature)
             return np.concatenate(features, axis=0)
         except Exception as e:
             print(e)
             raise ValueError(mesh.filename, 'bad features')
+
+def calculate_centroids(mesh, edge_points):
+    first_point_vertices = mesh.vs[edge_points[:, 0]]
+    second_point_vertices = mesh.vs[edge_points[:, 1]]
+    average_first_second = (first_point_vertices + second_point_vertices) * 3 / 8
+
+    third_point_vertices = mesh.vs[edge_points[:, 2]]
+    fourth_point_vertices = mesh.vs[edge_points[:, 3]]
+    average_third_fourth = (third_point_vertices + fourth_point_vertices) / 8
+
+    centroid = average_first_second + average_third_fourth
+    centroid = np.expand_dims(centroid, axis=2)
+    return centroid
 
 
 def dihedral_angle(mesh, edge_points):
