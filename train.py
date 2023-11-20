@@ -4,12 +4,18 @@ from data import DataLoader
 from models import create_model
 from util.writer import Writer
 from test import run_test
+import torch
 
 if __name__ == '__main__':
     opt = TrainOptions().parse()
     dataset = DataLoader(opt)
     dataset_size = len(dataset)
     print('#training meshes = %d' % dataset_size)
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print('- device:', device)
+    if device.type == 'cuda':
+        print(torch.cuda.get_device_name(0))
 
     model = create_model(opt)
     writer = Writer(opt)
@@ -56,5 +62,10 @@ if __name__ == '__main__':
         if epoch % opt.run_test_freq == 0:
             acc = run_test(epoch)
             writer.plot_acc(acc, epoch)
+
+
+    print('----memory used----:')
+    print('- allocated:', round(torch.cuda.memory_allocated(0)/1024**3,1))
+    print('- cached:   ', round(torch.cuda.memory_cached(0)/1024**3,1))
 
     writer.close()
