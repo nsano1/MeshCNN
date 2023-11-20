@@ -128,16 +128,16 @@ class MeshConvNet(nn.Module):
                  nresblocks=3):
         super(MeshConvNet, self).__init__()
         self.k = [nf0] + conv_res
-        self.res = [input_res] + pool_res
-        #self.res = [input_res]
+        # self.res = [input_res] + pool_res
+        self.res = [input_res]
         norm_args = get_norm_args(norm_layer, self.k[1:])
 
         for i, ki in enumerate(self.k[:-1]):
             setattr(self, 'conv{}'.format(i), MResConv(ki, self.k[i + 1], nresblocks))
             setattr(self, 'norm{}'.format(i), norm_layer(**norm_args[i]))
-            setattr(self, 'pool{}'.format(i), MeshPool(self.res[i + 1])) #
+            # setattr(self, 'pool{}'.format(i), MeshPool(self.res[i + 1])) #
             
-        self.gp = torch.nn.AvgPool1d(self.res[-1]) #
+        # self.gp = torch.nn.AvgPool1d(self.res[-1]) #
         # self.gp = torch.nn.MaxPool1d(self.res[-1])
         self.fc1 = nn.Linear(self.k[-1], fc_n)
         self.fc2 = nn.Linear(fc_n, nclasses)
@@ -147,10 +147,10 @@ class MeshConvNet(nn.Module):
         for i in range(len(self.k) - 1):
             x = getattr(self, 'conv{}'.format(i))(x, mesh)
             x = F.relu(getattr(self, 'norm{}'.format(i))(x))
-            x = getattr(self, 'pool{}'.format(i))(x, mesh) #
+            # x = getattr(self, 'pool{}'.format(i))(x, mesh) #
 
-        x = self.gp(x) #
-        x = x.view(-1, self.k[-1]) #
+        # x = self.gp(x) #
+        # x = x.view(-1, self.k[-1]) #
 
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
