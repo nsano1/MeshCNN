@@ -153,7 +153,7 @@ class MeshConvNet(nn.Module):
         # x = x.view(-1, self.k[-1]) #
 
         # x = F.relu(self.fc1(x))
-        x = self.fc2(x)
+        # x = self.fc2(x)
         return x
 
 class MResConv(nn.Module):
