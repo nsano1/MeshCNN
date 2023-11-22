@@ -152,10 +152,10 @@ class MeshConvNet(nn.Module):
         #call dimension here original = [16, 256, 180]
         #remove pooling layer = [16, 256, 750, 1] torch.squeeze
         #how adjust pooling kernel self.gp, self.fc1, self.fc2
-        self.gp = nn.AvgPool2d((750, 1))
+        # self.gp = nn.AvgPool2d((750, 1))
         x = self.gp(x)
-        # x = x.view(x.size(0), -1)
         x = x.view(-1, self.k[-1]) #
+        # x = x.view(x.size(0), -1)
 
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
